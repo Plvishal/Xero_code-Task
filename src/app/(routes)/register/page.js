@@ -1,5 +1,9 @@
-import SignupForm from '@/components/SignupForm.jsx';
-
+import { lazy, Suspense } from 'react';
+const SignForm = lazy(() => import('@/components/SignupForm.jsx'));
 export default function SignupHome() {
-  return <SignupForm />;
+  return (
+    <Suspense fallback={<div>Loading........</div>}>
+      <SignForm />
+    </Suspense>
+  );
 }
