@@ -1,9 +1,8 @@
 import { account } from './appwrite';
 
-export async function register(email, password, name,) {
+export async function register(email, password, name) {
   try {
     const response = await account.create('unique()', email, password, name);
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error registering user:', error);

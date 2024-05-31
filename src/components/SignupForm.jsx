@@ -4,12 +4,15 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Google as GoogleIcon,
   GitHub as GitHubIcon,
 } from '@mui/icons-material';
-
+import { register } from '@/lib/auth.js';
 export default function SignupForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -17,7 +20,6 @@ export default function SignupForm() {
     password: '',
     confirmPassword: '',
   });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -26,9 +28,26 @@ export default function SignupForm() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data Submitted:', formData);
+    if (formData.password !== formData.confirmPassword) {
+      alert('password do not match.Please enter write password ');
+      return;
+    }
+    try {
+      const response = await register(
+        formData.email,
+        formData.password,
+        `${formData.firstName} ${formData.lastName}`
+      );
+      alert('User register successfully done');
+      if (response) {
+        router('/login');
+      }
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
   };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-200 to-white p-5">
@@ -119,9 +138,9 @@ export default function SignupForm() {
           </div>
           <p className="text-center">
             Already have an account?
-            <a href="#" className="text-blue-500">
+            <Link href="/login" clLinkssName="text-blue-500">
               Login
-            </a>
+            </Link>
           </p>
         </div>
         <hr className="w-[1px] min-h-[570px]  border bg-black hidden md:block"></hr>
